@@ -20,7 +20,7 @@ module Ulid =
     open Extensions
     open Helpers
 
-    type Ulid private (timestamp:int64) as this =
+    type Ulid private (timestamp) as this =
         let encoding        = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"    
         let encodingLength  = 32L
         let mutable value = ""
@@ -53,7 +53,7 @@ module Ulid =
 
             loop timestamp length [] 
 
-        static member FromTimestamp (timestamp:int64) =
+        static member FromTimestamp timestamp =
             timestamp |> Ulid
 
         static member New =
