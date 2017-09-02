@@ -33,7 +33,7 @@ module Ulid =
 
         member this.Value with get() = value and private set(v) = value <- v
 
-        override this.ToString() = value
+        override this.ToString() = this.Value
 
         member private this.ConcatEncoding chars =
             List.fold (fun acc char -> acc + (encoding.Chars char).ToString()) "" chars
