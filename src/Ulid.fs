@@ -20,44 +20,41 @@ module Ulid =
     open Extensions
     open Helpers
 
-    let encoding        = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"
-    let encodingLength  = 32L
+    type Ulid private (timestamp:int64) as this =
+        let encoding        = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"    
+        let encodingLength  = 32L
+        let mutable value = ""
 
-    let concatEncoding chars =
-        List.fold (fun acc char -> acc + (encoding.Chars char).ToString()) "" chars
+        do
+            let timePart = this.EncodeTime timestamp 10
+            let randomPart = this.Randoms 16 0 31
+            this.Value <- List.append timePart randomPart |> this.ConcatEncoding
+            ()
 
-    let randoms length min max =
-        Random().GetSequence(min, max)
-            |> Seq.take length
-            |> Seq.toList
+        member this.Value with get() = value and private set(v) = value <- v
 
-    let encodeTime timestamp length =
-        let rec loop ts len chars =
-            match len with
-            | Positive    -> let char = ts % encodingLength
-                             let acc = (ts - char) / encodingLength
-                             loop acc (len - 1) ((Convert.ToInt32 char)::chars)
-            | NotPositive -> chars
+        override this.ToString() = value
 
-        loop timestamp length []
+        member private this.ConcatEncoding chars =
+            List.fold (fun acc char -> acc + (encoding.Chars char).ToString()) "" chars
 
+        member private this.Randoms length min max =
+            Random().GetSequence(min, max)
+                |> Seq.take length
+                |> Seq.toList
 
-    type Ulid private (value) =
-        member self.Value with get() = value
+        member private this.EncodeTime timestamp length =
+            let rec loop ts len chars =
+                match len with
+                | Positive    -> let char = ts % encodingLength
+                                 let acc = (ts - char) / encodingLength
+                                 loop acc (len - 1) ((Convert.ToInt32 char)::chars)
+                | NotPositive -> chars
 
-        override self.ToString() = value
-        
-        static member private Generate timestamp =
-            let timePart    = encodeTime timestamp 10
-            let randomPart  = randoms 16 0 31
-            List.append timePart randomPart
-                |> concatEncoding
+            loop timestamp length [] 
 
-        static member private ToUlid =
-            Ulid.Generate >> Ulid
-
-        static member FromTimestamp timestamp =
-            timestamp |> Ulid.ToUlid
+        static member FromTimestamp (timestamp:int64) =
+            timestamp |> Ulid
 
         static member New =
-            DateTime.UnixTime |> Ulid.ToUlid
+            DateTime.UnixTime |> Ulid
