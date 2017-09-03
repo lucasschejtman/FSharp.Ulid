@@ -1,6 +1,6 @@
 # Universally Unique Lexicographically Sortable Identifier
 
-A F# port of [alizain/ulid](https://github.com/alizain/ulid)
+F# .NET Core port of [alizain/ulid](https://github.com/alizain/ulid)
 
 ## Background
 
