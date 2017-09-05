@@ -1,0 +1,34 @@
+{
+    "version": "0.1.0",
+    "command": "dotnet",
+    "isShellCommand": true,
+    "args": [],
+    "tasks": [
+        {
+            "taskName": "build",
+            "args": [],
+            "isBuildCommand": true,
+            "showOutput": "silent",
+            "problemMatcher": "$msCompile"
+        },
+        {
+            "taskName": "perf",
+            "suppressTaskName": true,
+            "command": "fsharpi",
+            "args": [
+                "--use:src/Perf.fsx", "--exec"
+            ]
+        },
+        {
+            "taskName": "test",
+            "args": [
+                "run", "--project", "test/Ulid.Test.fsproj"
+            ],
+            "isBuildCommand": false,
+            "isTestCommand": true,
+            "showOutput": "always",
+            "problemMatcher": "$msCompile",
+            "suppressTaskName": true
+        }
+    ]
+}
