@@ -53,8 +53,10 @@ module Ulid =
 
             loop timestamp length [] 
 
+        /// Creates a new `Ulid` from the specified `int64` timestamp
         static member FromTimestamp timestamp =
             timestamp |> Ulid
 
+        /// Creates a new `Ulid` from the current Unix timestamp
         static member New =
             DateTime.UnixTime |> Ulid
