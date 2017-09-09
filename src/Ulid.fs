@@ -20,6 +20,7 @@ module Ulid =
     open Extensions
     open Helpers
 
+    /// Universally Unique Lexicographically Sortable Identifier
     type Ulid private (timestamp) as this =
         let encoding        = "0123456789ABCDEFGHJKMNPQRSTVWXYZ"    
         let encodingLength  = 32L
